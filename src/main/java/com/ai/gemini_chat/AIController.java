@@ -9,6 +9,7 @@ import java.util.Map;
 
 @RestController
 @AllArgsConstructor
+@CrossOrigin(origins = "*")
 @Slf4j
 @RequestMapping("/api/qna")
 public class AIController {
