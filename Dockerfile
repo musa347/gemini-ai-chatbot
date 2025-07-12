@@ -1,7 +1,7 @@
 FROM maven:3.9.8-eclipse-temurin-17 AS build
 WORKDIR /app
-COPY gemini-chat-backend/pom.xml .
-COPY gemini-chat-backend/src ./src
+COPY gemini-chat/pom.xml .
+COPY gemini-chat/src ./src
 RUN mvn clean package -DskipTests
 FROM  eclipse-temurin:17-jre
 WORKDIR /app
