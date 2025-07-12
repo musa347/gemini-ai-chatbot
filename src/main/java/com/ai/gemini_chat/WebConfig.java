@@ -8,7 +8,11 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("https://gemini-chat-frontend-i5hpndja4-musas-projects-892be9d9.vercel.app")
+                .allowedOrigins(
+                        "https://gemini-chat-frontend-i5hpndja4-musas-projects-892be9d9.vercel.app",
+                        "http://localhost:3000",
+                        "http://127.0.0.1:3000"
+                )
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
                 .allowCredentials(true);
