@@ -1,7 +1,6 @@
 package com.ai.gemini_chat;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -9,6 +8,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import java.util.Map;
 
 @Service
+@Slf4j
 public class QnAService {
     @Value("${gemini.api.url}")
     private String geminiApiUrl;
@@ -17,11 +17,9 @@ public class QnAService {
     private String geminiApiKey;
 
     private final WebClient webClient;
-    private final ObjectMapper objectMapper;
 
-    public QnAService(WebClient.Builder webClient) {
-        this.webClient = webClient.build();
-        this.objectMapper = new ObjectMapper();
+    public QnAService(WebClient.Builder webClientBuilder) {
+        this.webClient = webClientBuilder.build();
     }
 
     public String getAnswer(String question) {
@@ -30,22 +28,30 @@ public class QnAService {
                         Map.of("parts", new Object[] {
                                 Map.of("text", question)
                         })
-                }
+                },
+                "generationConfig", Map.of(
+                        "temperature", 0.7,
+                        "topK", 40,
+                        "topP", 0.95,
+                        "maxOutputTokens", 2048
+                )
         );
 
-        String response = webClient.post()
-                .uri(geminiApiUrl + "?key=" + geminiApiKey) // Append key as query param
-                .header("Content-Type", "application/json")
-                .bodyValue(requestBody)
-                .retrieve()
-                .bodyToMono(String.class)
-                .block();
-
         try {
-            JsonNode root = objectMapper.readTree(response);
-            return root.path("candidates").get(0).path("content").path("parts").get(0).path("text").asText();
+            log.info("Sending request to Gemini API: {}", geminiApiUrl);
+            String response = webClient.post()
+                    .uri(geminiApiUrl + "?key=" + geminiApiKey)
+                    .header("Content-Type", "application/json")
+                    .bodyValue(requestBody)
+                    .retrieve()
+                    .bodyToMono(String.class)
+                    .block();
+
+            log.debug("Received response from Gemini API: {}", response);
+            return response;
         } catch (Exception e) {
-            return "Error parsing Gemini API response: " + e.getMessage();
+            log.error("Error calling Gemini API", e);
+            throw new RuntimeException("Failed to get response from Gemini API", e);
         }
     }
 }
