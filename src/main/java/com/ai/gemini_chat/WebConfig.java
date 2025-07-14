@@ -11,6 +11,7 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addMapping("/**")
                 .allowedOrigins(
                         "https://gemini-chat-frontend-i126vs5op-musas-projects-892be9d9.vercel.app",
+                        "https://ptdf.vercel.app/",
                         "http://localhost:5173",  // Updated port for Vite
                         "http://127.0.0.1:5173",
                         "http://localhost:3000",
