@@ -10,7 +10,7 @@ public class WebConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
                 .allowedOrigins(
-                        "https://gemini-chat-frontend-i126vs5op-musas-projects-892be9d9.vercel.app",
+                        "/**",
                         "https://gemini-ai-chatbot-9nde.onrender.com",
                         "https://ptdf.vercel.app/",
                         "http://localhost:5173",  // Updated port for Vite
@@ -20,6 +20,6 @@ public class WebConfig implements WebMvcConfigurer {
                 )
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
-                .allowCredentials(true);
+                .allowCredentials(false);
     }
 }
